@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitch Formalizer - Transform Your Pitch</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Pitch Formalizer</h1>
+            <p class="tagline">Transform your ideas into professional, investor-ready pitches</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <h2>Submit Your Pitch</h2>
+                
+                <!-- Language Selection -->
+                <div class="language-selector">
+                    <label for="language">Select Language:</label>
+                    <select id="language" name="language">
+                        <option value="en">English</option>
+                        <option value="am">አማርኛ (Amharic)</option>
+                    </select>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="text" onclick="switchTab('text')">
+                        📝 Text Input
+                    </button>
+                    <button class="tab-button" data-tab="audio" onclick="switchTab('audio')">
+                        🎤 Audio Recording
+                    </button>
+                </div>
+
+                <!-- Text Input Tab -->
+                <div id="text-tab" class="tab-content active">
+                    <textarea 
+                        id="pitch-text" 
+                        placeholder="Enter your pitch here... Tell us about your idea, product, or service."
+                        rows="8"
+                    ></textarea>
+                    <button onclick="formalizePitch()" class="submit-btn">
+                        Formalize My Pitch
+                    </button>
+                </div>
+
+                <!-- Audio Input Tab -->
+                <div id="audio-tab" class="tab-content">
+                    <div class="audio-section">
+                        <p class="instructions">
+                            Click the button below to record your pitch or upload an audio file
+                        </p>
+                        
+                        <div class="recording-controls">
+                            <button id="record-btn" onclick="toggleRecording()" class="record-btn">
+                                🎤 Start Recording
+                            </button>
+                            <span id="recording-status" class="recording-status"></span>
+                        </div>
+                        
+                        <div class="file-upload">
+                            <p>Or upload an audio file:</p>
+                            <input type="file" id="audio-file" accept="audio/*" onchange="handleFileSelect()">
+                            <button onclick="uploadAudio()" class="submit-btn" id="upload-btn" disabled>
+                                Upload & Formalize
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analyzing and formalizing your pitch...</p>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="results-section" style="display: none;">
+                <h2>✨ Your Formalized Pitch</h2>
+                
+                <div class="result-card">
+                    <h3>Original Pitch:</h3>
+                    <div id="original-pitch" class="pitch-content"></div>
+                </div>
+
+                <div class="result-card formalized">
+                    <h3>Formalized Pitch:</h3>
+                    <div id="formalized-pitch" class="pitch-content"></div>
+                </div>
+
+                <button onclick="reset()" class="reset-btn">
+                    Create Another Pitch
+                </button>
+            </div>
+
+            <!-- Error Display -->
+            <div id="error" class="error-message" style="display: none;"></div>
+        </main>
+
+        <footer>
+            <p>Powered by Google Gemini AI | Supporting English and Amharic languages</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
