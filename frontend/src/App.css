@@ -319,6 +319,101 @@ textarea:focus {
   font-size: 1.05em;
 }
 
+.history-section {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.history-header h3 {
+  color: #667eea;
+  font-size: 1.3em;
+}
+
+.history-refresh-btn,
+.history-use-btn,
+.history-delete-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.history-refresh-btn,
+.history-use-btn {
+  background: #667eea;
+  color: white;
+}
+
+.history-delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.history-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.history-status {
+  color: #666;
+  padding: 10px 0;
+}
+
+.history-error {
+  background: #f8d7da;
+  color: #721c24;
+  border-left: 5px solid #dc3545;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-item {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.history-item-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.history-preview {
+  margin-bottom: 10px;
+}
+
+.history-preview p {
+  margin-top: 6px;
+  color: #333;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.history-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .error-message {
   background: #f8d7da;
   color: #721c24;
@@ -372,5 +467,13 @@ textarea:focus {
 
   .tabs {
     flex-direction: column;
+  }
+
+  .history-item-meta,
+  .history-header,
+  .history-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }

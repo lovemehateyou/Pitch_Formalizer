@@ -6,6 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import mongoose from 'mongoose';
 
 // ES Module dirname workaround
 const __filename = fileURLToPath(import.meta.url);
@@ -17,9 +18,42 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 // Initialize Google Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+let isDatabaseReady = false;
+
+const pitchHistorySchema = new mongoose.Schema(
+  {
+    pitchText: { type: String, required: true, trim: true },
+    formalizedText: { type: String, required: true },
+    language: { type: String, enum: ['en', 'am'], default: 'en' },
+    inputType: { type: String, enum: ['text', 'audio'], default: 'text' }
+  },
+  {
+    timestamps: true
+  }
+);
+
+const PitchHistory = mongoose.model('PitchHistory', pitchHistorySchema);
+
+async function connectDatabase() {
+  if (!MONGODB_URI) {
+    console.warn('⚠️ MONGODB_URI is not set. History feature will be disabled until MongoDB Atlas URI is provided.');
+    return;
+  }
+
+  try {
+    await mongoose.connect(MONGODB_URI);
+    isDatabaseReady = true;
+    console.log('✅ Connected to MongoDB');
+  } catch (error) {
+    console.error('❌ MongoDB connection failed:', error.message);
+    isDatabaseReady = false;
+  }
+}
 
 // Middleware
 app.use(cors());
@@ -62,7 +96,7 @@ const upload = multer({
  */
 async function formalizePitch(pitchText, language = 'en') {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     
     let prompt;
     if (language === 'am') {
@@ -121,21 +155,80 @@ app.get('/health', (req, res) => {
  */
 app.post('/api/formalize', async (req, res) => {
   try {
-    const { pitch_text, language = 'en' } = req.body;
+    const { pitch_text, language = 'en', input_type = 'text' } = req.body;
     
     if (!pitch_text) {
       return res.status(400).json({ error: 'No pitch text provided' });
     }
     
     const formalized = await formalizePitch(pitch_text, language);
+
+    let historyId = null;
+    if (isDatabaseReady) {
+      const historyRecord = await PitchHistory.create({
+        pitchText: pitch_text,
+        formalizedText: formalized,
+        language,
+        inputType: input_type
+      });
+      historyId = historyRecord._id;
+    }
     
     res.json({
       original: pitch_text,
       formalized: formalized,
-      language: language
+      language: language,
+      history_id: historyId
     });
   } catch (error) {
     console.error('Error in /api/formalize:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Get formalization history
+ */
+app.get('/api/history', async (req, res) => {
+  try {
+    if (!isDatabaseReady) {
+      return res.status(503).json({
+        error: 'History feature is unavailable because MongoDB is not connected yet. Add MONGODB_URI and restart the backend.'
+      });
+    }
+
+    const limit = Math.min(Math.max(parseInt(req.query.limit || '20', 10), 1), 100);
+    const historyItems = await PitchHistory.find()
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .lean();
+
+    res.json({ history: historyItems });
+  } catch (error) {
+    console.error('Error in /api/history:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Delete one history item
+ */
+app.delete('/api/history/:id', async (req, res) => {
+  try {
+    if (!isDatabaseReady) {
+      return res.status(503).json({
+        error: 'History feature is unavailable because MongoDB is not connected yet. Add MONGODB_URI and restart the backend.'
+      });
+    }
+
+    const deleted = await PitchHistory.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'History item not found' });
+    }
+
+    res.json({ message: 'History item deleted successfully' });
+  } catch (error) {
+    console.error('Error in DELETE /api/history/:id:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -186,6 +279,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
   console.log(`📍 API Health Check: http://localhost:${PORT}/health`);
+  connectDatabase();
 });
 
 export default app;

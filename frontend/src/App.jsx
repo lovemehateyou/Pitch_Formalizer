@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import LanguageSelector from './components/LanguageSelector';
 import TextInput from './components/TextInput';
 import AudioInput from './components/AudioInput';
+import History from './components/History';
 import Results from './components/Results';
 import LoadingSpinner from './components/LoadingSpinner';
 import ErrorMessage from './components/ErrorMessage';
@@ -13,8 +14,40 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [results, setResults] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState('');
 
-  const handleFormalize = async (pitchText) => {
+  useEffect(() => {
+    if (activeTab === 'history') {
+      fetchHistory();
+    }
+  }, [activeTab]);
+
+  const fetchHistory = async () => {
+    setHistoryLoading(true);
+    setHistoryError('');
+
+    try {
+      const response = await fetch('/api/history');
+      const data = await response.json();
+
+      if (!response.ok) {
+        setHistoryError(data.error || 'Failed to load history');
+        setHistory([]);
+        return;
+      }
+
+      setHistory(data.history || []);
+    } catch (err) {
+      setHistoryError('Network error: ' + err.message);
+      setHistory([]);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  const handleFormalize = async (pitchText, inputType = 'text') => {
     setLoading(true);
     setError('');
     
@@ -26,7 +59,8 @@ function App() {
         },
         body: JSON.stringify({
           pitch_text: pitchText,
-          language: language
+          language: language,
+          input_type: inputType
         })
       });
 
@@ -34,6 +68,9 @@ function App() {
 
       if (response.ok) {
         setResults(data);
+        if (activeTab === 'history') {
+          fetchHistory();
+        }
       } else {
         setError(data.error || 'An error occurred while processing your pitch');
       }
@@ -47,6 +84,34 @@ function App() {
   const handleReset = () => {
     setResults(null);
     setError('');
+  };
+
+  const handleUseHistoryItem = (item) => {
+    setResults({
+      original: item.pitchText,
+      formalized: item.formalizedText,
+      language: item.language,
+      history_id: item._id
+    });
+    setError('');
+  };
+
+  const handleDeleteHistoryItem = async (historyId) => {
+    try {
+      const response = await fetch(`/api/history/${historyId}`, {
+        method: 'DELETE'
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setHistoryError(data.error || 'Failed to delete history item');
+        return;
+      }
+
+      setHistory((prevHistory) => prevHistory.filter((item) => item._id !== historyId));
+    } catch (err) {
+      setHistoryError('Network error: ' + err.message);
+    }
   };
 
   return (
@@ -82,18 +147,34 @@ function App() {
                 >
                   🎤 Audio Recording
                 </button>
+                <button
+                  className={`tab-button ${activeTab === 'history' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('history')}
+                  data-tab="history"
+                >
+                  📚 History
+                </button>
               </div>
 
               {activeTab === 'text' ? (
                 <TextInput 
-                  onSubmit={handleFormalize}
+                  onSubmit={(text) => handleFormalize(text, 'text')}
+                  disabled={loading}
+                />
+              ) : activeTab === 'audio' ? (
+                <AudioInput 
+                  onSubmit={(text) => handleFormalize(text, 'audio')}
+                  language={language}
                   disabled={loading}
                 />
               ) : (
-                <AudioInput 
-                  onSubmit={handleFormalize}
-                  language={language}
-                  disabled={loading}
+                <History
+                  items={history}
+                  loading={historyLoading}
+                  error={historyError}
+                  onRefresh={fetchHistory}
+                  onUse={handleUseHistoryItem}
+                  onDelete={handleDeleteHistoryItem}
                 />
               )}
 
