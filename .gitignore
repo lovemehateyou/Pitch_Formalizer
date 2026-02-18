@@ -23,8 +23,19 @@ wheels/
 .installed.cfg
 *.egg
 
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log*
+
 # Environment variables
 .env
+.env.local
+.env.production
 
 # IDE
 .vscode/
@@ -39,6 +50,7 @@ Thumbs.db
 
 # Audio files
 uploads/
+backend/uploads/
 *.wav
 *.mp3
 *.ogg
@@ -46,3 +58,13 @@ uploads/
 
 # Test files
 test_app.py
+
+# Build files
+dist/
+build/
+.cache/
+
+# Logs
+logs/
+*.log
+
