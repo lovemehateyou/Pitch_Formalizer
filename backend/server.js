@@ -6,7 +6,6 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import speech from '@google-cloud/speech';
 
 // ES Module dirname workaround
 const __filename = fileURLToPath(import.meta.url);
@@ -103,22 +102,10 @@ Please provide:
 }
 
 /**
- * Transcribe audio using Web Speech API simulation
- * Note: For production, you would use Google Cloud Speech-to-Text API
+ * Note: Server-side audio transcription is not implemented.
+ * The frontend uses browser-based Web Speech API for speech recognition,
+ * which is more efficient and doesn't require additional API credentials.
  */
-async function transcribeAudio(audioFilePath, language = 'en') {
-  // This is a placeholder. In a real implementation, you would:
-  // 1. Use Google Cloud Speech-to-Text API
-  // 2. Or use a third-party service like AssemblyAI
-  // For now, we'll return a message indicating this needs implementation
-  
-  // Language mapping
-  const langCode = language === 'am' ? 'am-ET' : 'en-US';
-  
-  // Placeholder: In production, implement actual speech recognition
-  // For demonstration purposes, we'll indicate this is not implemented server-side
-  throw new Error('Server-side speech recognition requires Google Cloud Speech-to-Text API setup. Please implement using @google-cloud/speech package with proper credentials.');
-}
 
 // Routes
 

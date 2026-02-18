@@ -4,9 +4,7 @@ function AudioInput({ onSubmit, language, disabled }) {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingStatus, setRecordingStatus] = useState('');
   const [transcribedText, setTranscribedText] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
   
-  const mediaRecorderRef = useRef(null);
   const recognitionRef = useRef(null);
 
   const startRecording = async () => {
@@ -72,11 +70,6 @@ function AudioInput({ onSubmit, language, disabled }) {
     } else {
       startRecording();
     }
-  };
-
-  const handleFileSelect = (e) => {
-    setSelectedFile(e.target.files[0]);
-    setTranscribedText('');
   };
 
   const processTranscription = () => {
