@@ -1,147 +1,153 @@
 # 🎯 Pitch Formalizer
 
-A powerful web platform that helps entrepreneurs and presenters formalize their pitches to make them more professional, compelling, and investor-ready. Built with Flask and powered by Google Gemini AI.
+A powerful web platform that helps entrepreneurs and presenters formalize their pitches to make them more professional, compelling, and investor-ready. Built with AI and supporting both English and Amharic languages.
 
-## ✨ Features
+## 🌟 Available Versions
+
+This repository contains **two implementations** of the same application:
+
+### 1. **MERN Stack Version** (Recommended) 🆕
+- **Backend**: Node.js + Express.js
+- **Frontend**: React with Vite
+- **AI**: Google Gemini AI
+- **Speech**: Web Speech API (browser-based)
+- 📖 **[Read MERN Documentation](./README-MERN.md)**
+
+### 2. **Flask/Python Version** (Legacy)
+- **Backend**: Python + Flask
+- **Frontend**: HTML + Vanilla JavaScript
+- **AI**: Google Gemini AI
+- **Speech**: Python SpeechRecognition library
+- 📖 **[Read Flask Documentation](./README-FLASK.md)**
+
+## ✨ Features (Both Versions)
 
 - **Text Input**: Enter your pitch directly through a user-friendly text interface
-- **Audio Recording**: Record your pitch directly in the browser using your microphone
-- **Audio Upload**: Upload pre-recorded audio files for transcription and formalization
+- **Audio Recording**: Record your pitch directly in the browser
 - **Multi-language Support**: Full support for both English and Amharic (አማርኛ) languages
 - **AI-Powered Formalization**: Uses Google Gemini AI to analyze and improve your pitch
 - **Professional Feedback**: Get detailed suggestions on how to improve your pitch delivery
 - **Beautiful UI**: Clean, modern, and responsive interface that works on all devices
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
-### Prerequisites
+### MERN Stack Version
 
-- Python 3.8 or higher
-- Google Gemini API key (get it from [Google AI Studio](https://makersuite.google.com/app/apikey))
-- Modern web browser with microphone access (for recording feature)
+```bash
+# Backend
+cd backend
+npm install
+cp .env.example .env
+# Add your GEMINI_API_KEY to .env
+npm start
 
-### Installation
+# Frontend (in another terminal)
+cd frontend
+npm install
+npm run dev
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/lovemehateyou/Pitch_Formalizer.git
-   cd Pitch_Formalizer
-   ```
+Visit http://localhost:3000
 
-2. **Create a virtual environment** (recommended)
-   ```bash
-   python -m venv venv
-   
-   # On Windows
-   venv\Scripts\activate
-   
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
+### Flask Version
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+# Setup
+pip install -r requirements.txt
+cp .env.example .env
+# Add your GEMINI_API_KEY to .env
 
-4. **Set up environment variables**
-   ```bash
-   # Copy the example env file
-   cp .env.example .env
-   
-   # Edit .env and add your Gemini API key
-   # GEMINI_API_KEY=your_actual_api_key_here
-   ```
+# Run
+python app.py
+```
 
-5. **Run the application**
-   ```bash
-   python app.py
-   ```
+Visit http://localhost:5000
 
-6. **Open your browser**
-   
-   Navigate to `http://localhost:5000`
+## 🎯 Which Version Should I Use?
 
-## 📖 Usage
+| Feature | MERN Stack | Flask |
+|---------|-----------|-------|
+| Modern React UI | ✅ | ❌ |
+| Single Page App | ✅ | ❌ |
+| Browser-based Speech | ✅ | ❌ |
+| Server-side Speech | ❌ | ✅ |
+| Easy Deployment | ✅ | ✅ |
+| Learning React | ✅ | ❌ |
+| Learning Python | ❌ | ✅ |
 
-### Text Input Method
+**Recommendation**: Use the **MERN Stack version** for:
+- Modern web development practices
+- Better user experience with React
+- Easier frontend development
+- More scalable architecture
 
-1. Select your language (English or Amharic)
-2. Click on the "📝 Text Input" tab
-3. Type or paste your pitch in the text area
-4. Click "Formalize My Pitch"
-5. View your formalized pitch with improvement suggestions
+Use the **Flask version** if:
+- You prefer Python
+- You need server-side audio processing
+- You're more comfortable with traditional server-rendered apps
 
-### Audio Recording Method
+## 📖 Documentation
 
-1. Select your language (English or Amharic)
-2. Click on the "🎤 Audio Recording" tab
-3. Click "Start Recording" and speak your pitch
-4. Click "Stop Recording" when done
-5. Click "Upload & Formalize" to process
-6. View your transcribed and formalized pitch
+- **[MERN Stack Guide](./README-MERN.md)** - Complete guide for Node.js/React version
+- **[Flask Guide](./README-FLASK.md)** - Complete guide for Python/Flask version
+- **[Quick Start Guide](./QUICKSTART.md)** - Quick setup for Flask version
+- **[Implementation Summary](./IMPLEMENTATION_SUMMARY.md)** - Technical details
 
-### Audio Upload Method
+## 🔑 Getting Your Gemini API Key
 
-1. Select your language (English or Amharic)
-2. Click on the "🎤 Audio Recording" tab
-3. Click "Choose File" and select your audio file
-4. Supported formats: WAV, MP3, OGG, FLAC, M4A
-5. Click "Upload & Formalize"
-6. View your transcribed and formalized pitch
+1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Sign in with your Google account
+3. Click "Create API Key"
+4. Copy the key and add it to your `.env` file
 
 ## 🌍 Language Support
 
 ### English
-Full support for English pitch formalization with:
 - Natural language processing
 - Professional business terminology
 - Investor-focused improvements
 
 ### Amharic (አማርኛ)
-Native support for Amharic language including:
-- Amharic text input and output
+- Native Amharic text input and output
 - Amharic speech recognition
 - Culturally appropriate formalization
 - Professional Amharic business language
 
+## 💡 Usage
+
+1. **Select your language** (English or አማርኛ)
+2. **Choose input method**:
+   - Type your pitch in the text box, OR
+   - Record your pitch using the microphone
+3. **Click "Formalize"** to process
+4. **Review results** - See your original pitch vs. the formalized version
+5. **Get feedback** - Receive suggestions for improvement
+
 ## 🛠️ Technology Stack
 
-- **Backend**: Flask (Python web framework)
-- **AI Engine**: Google Gemini AI (gemini-pro model)
-- **Speech Recognition**: Google Speech Recognition API
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Audio Processing**: MediaRecorder API, SpeechRecognition library
+### MERN Version
+- **MongoDB** - (Not used, stateless app)
+- **Express.js** - Backend framework
+- **React** - Frontend library
+- **Node.js** - Runtime environment
+- **Google Gemini AI** - AI formalization
+- **Vite** - Build tool
+- **Web Speech API** - Speech recognition
 
-## 📁 Project Structure
+### Flask Version
+- **Flask** - Web framework
+- **Python** - Programming language
+- **Google Gemini AI** - AI formalization
+- **SpeechRecognition** - Audio transcription
+- **HTML/CSS/JS** - Frontend
 
-```
-Pitch_Formalizer/
-├── app.py                 # Main Flask application
-├── requirements.txt       # Python dependencies
-├── .env.example          # Example environment variables
-├── .gitignore            # Git ignore file
-├── README.md             # This file
-├── templates/
-│   └── index.html        # Main HTML template
-└── static/
-    ├── css/
-    │   └── style.css     # Styling
-    └── js/
-        └── script.js     # Frontend JavaScript
-```
+## 🎨 Screenshots
 
-## 🔒 Security Notes
-
-- Never commit your `.env` file with real API keys
-- The `.env` file is already in `.gitignore`
-- Keep your Gemini API key secure
-- Audio files are automatically deleted after processing
-- Maximum file upload size is 16MB
+*(Screenshots would go here showing the UI)*
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request for either version.
 
 ## 📝 License
 
@@ -150,39 +156,8 @@ This project is open source and available under the MIT License.
 ## 🙏 Acknowledgments
 
 - Google Gemini AI for powerful language processing
-- Flask community for the excellent web framework
+- Flask and React communities for excellent frameworks
 - All contributors and users of this platform
-
-## 💡 Tips for Best Results
-
-1. **Be Clear**: Speak or write clearly when inputting your pitch
-2. **Be Specific**: Include key details about your business, product, or service
-3. **Include Numbers**: Mention metrics, market size, or financial projections
-4. **State the Problem**: Clearly identify the problem you're solving
-5. **Mention Your Solution**: Explain how your product/service solves the problem
-6. **Highlight Uniqueness**: What makes you different from competitors?
-
-## 🐛 Troubleshooting
-
-### Microphone not working
-- Check browser permissions for microphone access
-- Try a different browser (Chrome/Edge recommended)
-- Ensure no other application is using the microphone
-
-### API errors
-- Verify your Gemini API key is correct in `.env`
-- Check your internet connection
-- Ensure you haven't exceeded API rate limits
-
-### Audio transcription issues
-- Speak clearly and at a moderate pace
-- Ensure minimal background noise
-- Use a quality microphone for better results
-- For Amharic, ensure proper pronunciation
-
-## 📞 Support
-
-For issues, questions, or suggestions, please open an issue on GitHub.
 
 ---
 
