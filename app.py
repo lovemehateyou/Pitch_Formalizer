@@ -78,7 +78,7 @@ def transcribe_audio(audio_file_path, language='en'):
         language: Language code for speech recognition
     
     Returns:
-        Transcribed text
+        tuple: (success: bool, result: str) where result is either transcribed text or error message
     """
     recognizer = sr.Recognizer()
     
@@ -91,13 +91,13 @@ def transcribe_audio(audio_file_path, language='en'):
             
             # Use Google Speech Recognition
             text = recognizer.recognize_google(audio_data, language=lang_code)
-            return text
+            return (True, text)
     except sr.UnknownValueError:
-        return "Could not understand the audio"
+        return (False, "Could not understand the audio")
     except sr.RequestError as e:
-        return f"Could not request results; {e}"
+        return (False, f"Could not request results; {e}")
     except Exception as e:
-        return f"Error transcribing audio: {str(e)}"
+        return (False, f"Error transcribing audio: {str(e)}")
 
 @app.route('/')
 def index():
@@ -144,19 +144,23 @@ def formalize_audio():
             audio_file.save(filepath)
             
             # Transcribe audio
-            transcribed_text = transcribe_audio(filepath, language)
+            success, result = transcribe_audio(filepath, language)
             
             # Clean up the file
-            os.remove(filepath)
+            try:
+                os.remove(filepath)
+            except Exception as e:
+                # Log the error but don't fail the request
+                print(f"Warning: Could not remove temporary file {filepath}: {e}")
             
-            if transcribed_text.startswith('Could not') or transcribed_text.startswith('Error'):
-                return jsonify({'error': transcribed_text}), 400
+            if not success:
+                return jsonify({'error': result}), 400
             
             # Formalize the transcribed text
-            formalized = formalize_pitch(transcribed_text, language)
+            formalized = formalize_pitch(result, language)
             
             return jsonify({
-                'original': transcribed_text,
+                'original': result,
                 'formalized': formalized,
                 'language': language
             })

@@ -7,8 +7,8 @@ let recordedBlob = null;
 function switchTab(tab) {
     const textTab = document.getElementById('text-tab');
     const audioTab = document.getElementById('audio-tab');
-    const textButton = document.querySelector('.tab-button:nth-child(1)');
-    const audioButton = document.querySelector('.tab-button:nth-child(2)');
+    const textButton = document.querySelector('[data-tab="text"]');
+    const audioButton = document.querySelector('[data-tab="audio"]');
 
     if (tab === 'text') {
         textTab.classList.add('active');
