@@ -43,3 +43,6 @@ uploads/
 *.mp3
 *.ogg
 *.flac
+
+# Test files
+test_app.py
